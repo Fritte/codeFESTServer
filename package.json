@@ -1,0 +1,16 @@
+{
+  "name": "codeFESTServer",
+  "version": "0.0.0",
+  "description": "Code from the React tutorial.",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.4.5",
+    "faker": "^2.1.2",
+    "jquery": "^2.1.3",
+    "request": "^2.53.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  }
+}
