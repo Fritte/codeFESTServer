@@ -4,10 +4,10 @@
   "description": "Code from the React tutorial.",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.4.5",
-    "faker": "^2.1.2",
-    "moment": "^2.9.0",
-    "random-js": "^1.0.4",
+      "express": "^4.4.5",
+      "faker": "^2.1.2",
+      "moment": "^2.9.0",
+      "random-js": "^1.0.4",
     "request": "^2.53.0"
   },
   "devDependencies": {},

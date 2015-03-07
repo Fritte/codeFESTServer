@@ -5,6 +5,8 @@ var express = require('express');
 var app = express();
 var avatar = require('./avatar');
 var request = require('request');
+var fs = require('fs');
+var path = require('path');
 
 var port = 3000 || process.argv[0];
 
@@ -12,7 +14,6 @@ var port = 3000 || process.argv[0];
  * return a Random Avatar
  */
 app.get('/getNextPage', function (req, res) {
-
     var origin = req.query["origin"];
     var destination = req.query["destination"];
     var departureDate = req.query["departureDate"];
@@ -52,10 +53,20 @@ app.get('/getNextPage', function (req, res) {
         }
         console.log(profile.distance);
         console.log(profile.estimatedDuration);
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(profiles));
     });
 });
+
+app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+});
+app.use('/', express.static(path.join(__dirname, 'src')));
 
 app.listen(port);
 
