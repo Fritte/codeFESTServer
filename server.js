@@ -4,7 +4,6 @@
 var express = require('express');
 var app = express();
 var avatar = require('./avatar');
-var jquery = require('jquery');
 var request = require('request');
 
 var port = 3000 || process.argv[0];
@@ -12,12 +11,11 @@ var port = 3000 || process.argv[0];
 /**
  * return a Random Avatar
  */
-app.get('/getNextUser', function (req, res) {
+app.get('/getNextPage', function (req, res) {
 
     var origin = req.query["origin"];
     var destination = req.query["destination"];
     var departureDate = req.query["departureDate"];
-
     /**
      * check if params destination and origin are specified
      */
@@ -34,41 +32,28 @@ app.get('/getNextUser', function (req, res) {
         res.status(404).send("destination param not found");
         return;
     }
-
-    /** jquery.ajax({
-        dataType: "json",
-        type: "GET",
-        url: "http://maps.googleapis.com/maps/api/distancematrix/",
-        data:{
-          destination: destination,
-          origin:origin,
-          mode: "car",
-          language: "ger-GER",
-          sensor: "true"
-        },
-        success: function(data){
-            console.log(JSON.stringify(data));
-        }
-    }); **/
+    var profiles = [];
 
     request("http://maps.googleapis.com/maps/api/distancematrix/" +
     "json?origins=" + origin +
     "&destinations=Berlin" + destination +
     "&mode=car&language=ger-Ger&sensor=false", function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-            var responseFromServer= JSON.parse(body);
+        for(var i=0; i<5; i++) {
+            if (!error && response.statusCode == 200) {
+                var responseFromServer = JSON.parse(body);
+                var profile = avatar.getRandomAvatar(departureDate);
+                profile.distance = responseFromServer.rows[0].elements[0].distance.text;
+                profile.estimatedDuration = responseFromServer.rows[0].elements[0].duration.text;
+                profiles.push(profile)
 
-            var profile = avatar.getRandomAvatar(departureDate);
-            profile.distance = responseFromServer.rows[0].elements[0].distance.text;
-            profile.estimatedDuration = responseFromServer.rows[0].elements[0].duration.text;
-            console.log (profile.distance);
-            console.log(profile.estimatedDuration);
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(profile));
-        } else {
-            console.log(body);
+            } else {
+                console.log(body);
+            }
         }
-
+        console.log(profile.distance);
+        console.log(profile.estimatedDuration);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(profiles));
     });
 });
 
