@@ -16,10 +16,16 @@ app.get('/getNextUser', function (req, res) {
 
     var origin = req.query["origin"];
     var destination = req.query["destination"];
+    var departureDate = req.query["departureDate"];
 
     /**
      * check if params destination and origin are specified
      */
+    if (typeof departureDate == 'undefined' ){
+        res.status(404).send("departureDate param not found");
+        return;
+    }
+    departureDate = new Date(departureDate);
     if (typeof origin === 'undefined') {
         res.status(404).send("origin param not found");
         return;
@@ -52,7 +58,7 @@ app.get('/getNextUser', function (req, res) {
         if (!error && response.statusCode == 200) {
             var responseFromServer= JSON.parse(body);
 
-            var profile = avatar.getRandomAvatar();
+            var profile = avatar.getRandomAvatar(departureDate);
             profile.distance = responseFromServer.rows[0].elements[0].distance.text;
             profile.estimatedDuration = responseFromServer.rows[0].elements[0].duration.text;
             console.log (profile.distance);

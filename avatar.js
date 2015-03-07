@@ -3,11 +3,16 @@
  */
 
 var faker = require('faker');
+var moment = require('moment');
+var random = require('random-js');
 faker.locale = "de";
 
+function randomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
 
 module.exports = {
-    getRandomAvatar: function () {
+    getRandomAvatar: function (departureDate) {
         var avatar = {};
         avatar.name = faker.name.findName();
         avatar.email = faker.internet.email(avatar.name);
@@ -22,6 +27,11 @@ module.exports = {
         avatar.breakEfficiency = faker.random.number(100);
         avatar.accelerationEfficiency = faker.random.number(100);
         avatar.security = faker.random.number(100);
+
+        // get a random Date in two +- 1 d
+        d = new Date(departureDate);
+        avatar.travelTime = randomDate(d, d);
+        console.log(departureDate);
 
         return avatar;
     }
