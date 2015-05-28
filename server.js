@@ -34,17 +34,21 @@ app.get('/getNextPage', function (req, res) {
         return;
     }
     var profiles = [];
-
+console.log("buh!");
     request("http://maps.googleapis.com/maps/api/distancematrix/" +
     "json?origins=" + origin +
     "&destinations=Berlin" + destination +
     "&mode=car&language=ger-Ger&sensor=false", function (error, response, body) {
-        for(var i=0; i<5; i++) {
+        console.log(body);
+        for(var i=0; i<10; i++) {
             if (!error && response.statusCode == 200) {
                 var responseFromServer = JSON.parse(body);
                 var profile = avatar.getRandomAvatar(departureDate);
                 profile.distance = responseFromServer.rows[0].elements[0].distance.text;
                 profile.estimatedDuration = responseFromServer.rows[0].elements[0].duration.text;
+                profile.estimatedDuration_stamp = profile.estimatedDuration.match(/[0-9]+/g);
+                profile.estimatedDuration_stamp = (profile.estimatedDuration_stamp[0] * 3600) + (profile.estimatedDuration_stamp[1] * 60);
+                profile.estimatedDuration_stamp += Math.random() * 600;
                 profiles.push(profile)
 
             } else {
